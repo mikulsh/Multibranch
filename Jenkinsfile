@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Sonarqube:- Static code Analyzer') {
             steps {
-                withSonarQubeEnv('sonarQubee') {
+                withSonarQubeEnv('SonarQube') {
                     sh "mvn sonar:sonar"
                 }
             }
