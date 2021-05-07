@@ -4,8 +4,8 @@ pipeline {
     stages {
         stage('Artifacts Downoad') {
             steps {
-              sh 'wget --user=admin --password=1234 http://localhost:8081/repository/repository-example/Spring3HibernateApp/Spring3HibernateApp/4.0.0/Spring3HibernateApp-4.0.0.war'
-              sh 'mv Spring3HibernateApp-4.0.0.war Spring3Appp.war'
+              sh 'wget --user=admin --password=1234 http://localhost:8081/repository/repository-example/Spring3HibernateApp/Spring3HibernateApp/5.0.0/Spring3HibernateApp-5.0.0.war'
+              sh 'mv Spring3HibernateApp-5.0.0.war Spring3Appp.war'
             }
         }
         stage('Copying Artifacts to server') {
