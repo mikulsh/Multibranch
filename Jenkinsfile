@@ -10,7 +10,7 @@ pipeline {
         }
         stage('Copying Artifacts to server') {
             steps {
-                sh '/var/lib/jenkins/deployScript.sh'
+                sh '/var/lib/jenkins/script.sh'
             }
         }
     }
