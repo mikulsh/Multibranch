@@ -42,7 +42,7 @@ pipeline {
         }
         stage("Nexus Artifact Upload") {
             steps {
-                 nexusArtifactUploader artifacts: [[artifactId: 'Spring3HibernateApp', classifier: '', file: 'target/Spring3HibernateApp.war', type: 'war']], credentialsId: 'nexus-credentials', groupId: 'Spring3HibernateApp', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'repository-example', version: '6.0.0'
+                 nexusArtifactUploader artifacts: [[artifactId: 'Spring3HibernateApp', classifier: '', file: 'target/Spring3HibernateApp.war', type: 'war']], credentialsId: 'nexusOSS', groupId: 'Spring3HibernateApp', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'repository-example', version: '7.0.0'
     }
         }
     }
