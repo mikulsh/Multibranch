@@ -17,6 +17,7 @@ pipeline {
         stage('Cobertura Report') {
             steps {
                 sh "mvn cobertura:cobertura"
+                cobertura coberturaReportFile: ' **/target/site/cobertura/coverage.xml', conditionalCoverageTargets: '70, 0, 0', lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 10, methodCoverageTargets: '80, 0, 0', packageCoverageTargets: '80, 0, 0', sourceEncoding: 'ASCII'
             }
         }
         stage('Sonarqube:- Static code Analyzer') {
@@ -26,17 +27,17 @@ pipeline {
                 }
             }
         }
-        stage('ArchiveArtifact'){
-            steps {
-                    sh "mvn surefire-report:report"
-                    archiveArtifacts 'target/*.war'   
-            }
-        }
         stage("Quality Gate") {
             steps {
               timeout(time: 1, unit: 'HOURS') {
                 waitForQualityGate abortPipeline: true
               }
+            }
+        }
+        stage('ArchiveArtifact'){
+            steps {
+                    sh "mvn surefire-report:report"
+                    archiveArtifacts 'target/*.war'   
             }
         }
         stage("Nexus Artifact Upload") {
