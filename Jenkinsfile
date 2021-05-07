@@ -27,13 +27,6 @@ pipeline {
                 }
             }
         }
-        stage("Quality Gate") {
-            steps {
-              timeout(time: 1, unit: 'HOURS') {
-                waitForQualityGate abortPipeline: true
-              }
-            }
-        }
         stage('ArchiveArtifact'){
             steps {
                     sh "mvn surefire-report:report"
