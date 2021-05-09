@@ -1,32 +1,46 @@
-pipeline {
-    agent any
+node {
+    try {
+        notifyBuild('STARTED')
 
-    stages {
-        stage('Artifacts Downoad') {
-            steps {
-              sh 'wget --user=admin --password=1234 http://localhost:8081/repository/repository-example/Spring3HibernateApp/Spring3HibernateApp/5.0.0/Spring3HibernateApp-5.0.0.war'
-              sh 'mv Spring3HibernateApp-5.0.0.war Spring3Appp.war'
-            }
+        stage('Downloading Artifacts') {
+            sh 'wget --user=admin --password=1234 http://localhost:8081/repository/repository-example/Spring3HibernateApp/Spring3HibernateApp/5.0.0/Spring3HibernateApp-5.0.0.war'
         }
-        stage('Copying Artifacts to server') {
-            steps {
-                sh '/var/lib/jenkins/script.sh'
-            }
+
+        stage('Deploying Artifacts') {
+            sh '/var/lib/jenkins/script.sh'
         }
-    }
-    post {
-        success {
-            notifySuccessful()
-        }
-        failure{
-            notifyFailed()
-        }
-    }
+  } catch (e) {
+    // If there was an exception thrown, the build failed
+    currentBuild.result = "FAILED"
+    throw e
+  } finally {
+    // Success or failure, always send notifications
+    notifyBuild(currentBuild.result)
+  }
 }
 
-def notifyFailed() {
-    slackSend (color: '#00FF00', message: "FAILED TO DEPLOY ARTIFACTS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-}
-def notifySuccessful() {
-    slackSend (color: '#00FF00', message: "SUCCESSFULLY DEPLOYED ONTO SERVER: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
+def notifyBuild(String buildStatus = 'STARTED') {
+  // build status of null means successful
+  buildStatus =  buildStatus ?: 'SUCCESSFUL'
+
+  // Default values
+  def colorName = 'RED'
+  def colorCode = '#FF0000'
+  def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+  def summary = "${subject} (${env.BUILD_URL})"
+
+  // Override default values based on build status
+  if (buildStatus == 'STARTED') {
+    color = 'YELLOW'
+    colorCode = '#FFFF00'
+  } else if (buildStatus == 'SUCCESSFUL') {
+    color = 'GREEN'
+    colorCode = '#00FF00'
+  } else {
+    color = 'RED'
+    colorCode = '#FF0000'
+  }
+
+  // Send notifications
+  slackSend (color: colorCode, message: summary)
 }
