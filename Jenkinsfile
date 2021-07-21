@@ -106,4 +106,10 @@ def notifyBuild(String buildStatus = 'STARTED') {
 
   // Send notifications
   slackSend (color: colorCode, message: summary)
+  
+  emailext (
+      subject: Success,
+      body: Test mail,
+      recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+    )
 }
